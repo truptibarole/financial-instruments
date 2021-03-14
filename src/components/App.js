@@ -1,9 +1,8 @@
-import '../App.css';
+import '../App.scss';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FinancialInstrumentsTable from './FinancialInstrumentsTable';
-// import {store} from '../store';
 import { fetchConfig } from '../actions'
 
 class App extends Component {
@@ -14,7 +13,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="app">
         <FinancialInstrumentsTable />
       </div>
     );

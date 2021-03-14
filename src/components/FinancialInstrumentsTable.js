@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateFinancialInstruments } from '../actions'
-
 import TableRows from './TableRows';
 
 class FinancialInstrumentsTable extends Component {
@@ -15,21 +14,21 @@ class FinancialInstrumentsTable extends Component {
 
     sortPrice(financialDetails) {
         const { updateFinancialInstruments } = this.props;
-        const sortByPrice = financialDetails.sort((a, b) => {
-            return b.price - a.price;
+        const sortByPrice = financialDetails.sort((item1, item2) => {
+            console.log(item1, item2);
+            return item2.price - item1.price;
         });
+
         updateFinancialInstruments(sortByPrice);
     };
 
     sortTicker(financialDetails) {
         const { updateFinancialInstruments } = this.props;
-        const sortByTicker = financialDetails.sort((a, b) => {
-            const ticker1 = a.ticker.toUpperCase();
-            const ticker2 = b.ticker.toUpperCase();
-            if (ticker1 < ticker2) {
+        const sortByTicker = financialDetails.sort((item1, item2) => {
+            if (item1.ticker < item2.ticker) {
                 return -1;
             }
-            if (ticker1 > ticker2) {
+            if (item1.ticker > item2.ticker) {
                 return 1;
             }
             return 0;
@@ -53,9 +52,8 @@ class FinancialInstrumentsTable extends Component {
     };
 
     render() {
-        console.log(this.props.config);
         return (
-            <div className="container">
+            <div className="container" role="main">
                 <h1>Financial Instruments</h1>
                 {!this.props.config.financialInstruments &&
                     <div>
@@ -64,7 +62,12 @@ class FinancialInstrumentsTable extends Component {
                 }
                 {this.props.config && this.props.config.financialInstruments &&
                     <div>
-                        <table className="celled table">
+                        <div className="actions">
+                            <button className="button" onClick={() => this.sortAsset(this.props.config.financialInstruments)}>Sort Assets</button>
+                            <button className="button" onClick={() => this.sortPrice(this.props.config.financialInstruments)}>Sort By Price</button>
+                            <button className="button" onClick={() => this.sortTicker(this.props.config.financialInstruments)}>Sort Ticker</button>
+                        </div>
+                        <table className="table">
                             <thead>
                                 <tr>
                                     <th>Asset Class</th>
@@ -76,10 +79,6 @@ class FinancialInstrumentsTable extends Component {
                                 <TableRows financialInstruments={this.props.config.financialInstruments} />
                             </tbody>
                         </table>
-
-                        <button className="button" onClick={() => this.sortPrice(this.props.config.financialInstruments)}>Sort Price</button>
-                        <button className="button" onClick={() => this.sortTicker(this.props.config.financialInstruments)}>Sort Ticker</button>
-                        <button className="button" onClick={() => this.sortAsset(this.props.config.financialInstruments)}>Sort Asset</button>
                     </div>
                 }
             </div>
