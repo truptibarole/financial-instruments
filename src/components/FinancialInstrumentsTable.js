@@ -15,7 +15,6 @@ class FinancialInstrumentsTable extends Component {
     sortPrice(financialDetails) {
         const { updateFinancialInstruments } = this.props;
         const sortByPrice = financialDetails.sort((item1, item2) => {
-            console.log(item1, item2);
             return item2.price - item1.price;
         });
 
