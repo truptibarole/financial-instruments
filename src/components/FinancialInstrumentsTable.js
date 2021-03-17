@@ -5,25 +5,19 @@ import { updateFinancialInstruments } from '../actions'
 import TableRows from './TableRows';
 
 class FinancialInstrumentsTable extends Component {
-    constructor(props) {
-        super(props);
-        this.sortPrice = this.sortPrice.bind(this);
-        this.sortTicker = this.sortTicker.bind(this);
-        this.sortAsset = this.sortAsset.bind(this);
-    }
 
-    sortPrice(financialDetails) {
-        const { updateFinancialInstruments } = this.props;
-        const sortByPrice = financialDetails.sort((item1, item2) => {
+    sortPrice = () => {
+        const { updateFinancialInstruments, config } = this.props;
+        const sortByPrice = config.financialInstruments.sort((item1, item2) => {
             return item2.price - item1.price;
         });
 
         updateFinancialInstruments(sortByPrice);
     };
 
-    sortTicker(financialDetails) {
-        const { updateFinancialInstruments } = this.props;
-        const sortByTicker = financialDetails.sort((item1, item2) => {
+    sortTicker = () => {
+        const { updateFinancialInstruments, config } = this.props;
+        const sortByTicker = config.financialInstruments.sort((item1, item2) => {
             if (item1.ticker < item2.ticker) {
                 return -1;
             }
@@ -35,36 +29,37 @@ class FinancialInstrumentsTable extends Component {
         updateFinancialInstruments(sortByTicker);
     };
 
-    sortAsset(finDetails) {
-        const { updateFinancialInstruments } = this.props;
-        const macroData = finDetails.filter(
-            (details) => details.assetClass === "Macro"
+    sortAsset = () => {
+        const { updateFinancialInstruments, config } = this.props;
+        const macroData = config.financialInstruments.filter(
+            details => details.assetClass === "Macro"
         );
-        const creditData = finDetails.filter(
-            (details) => details.assetClass === "Credit"
+        const creditData = config.financialInstruments.filter(
+            details => details.assetClass === "Credit"
         );
-        const equityData = finDetails.filter(
-            (details) => details.assetClass === "Equities"
+        const equityData = config.financialInstruments.filter(
+            details => details.assetClass === "Equities"
         );
-        const sortByAsset = macroData.concat(equityData, creditData);
+        const sortByAsset = [...macroData, ...equityData, ...creditData];
         updateFinancialInstruments(sortByAsset);
     };
 
     render() {
+        const { config } = this.props;
         return (
             <div className="container" role="main">
                 <h1>Financial Instruments</h1>
-                {!this.props.config.financialInstruments &&
+                {!config.financialInstruments &&
                     <div>
                         <h2>Failed to load...</h2>
                     </div>
                 }
-                {this.props.config && this.props.config.financialInstruments &&
+                {config && config.financialInstruments &&
                     <div>
                         <div className="actions">
-                            <button className="button" onClick={() => this.sortAsset(this.props.config.financialInstruments)}>Sort Assets</button>
-                            <button className="button" onClick={() => this.sortPrice(this.props.config.financialInstruments)}>Sort By Price</button>
-                            <button className="button" onClick={() => this.sortTicker(this.props.config.financialInstruments)}>Sort Ticker</button>
+                            <button className="button" onClick={this.sortAsset}>Sort Assets</button>
+                            <button className="button" onClick={this.sortPrice}>Sort By Price</button>
+                            <button className="button" onClick={this.sortTicker}>Sort Ticker</button>
                         </div>
                         <table className="table">
                             <thead>
@@ -75,7 +70,7 @@ class FinancialInstrumentsTable extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                <TableRows financialInstruments={this.props.config.financialInstruments} />
+                                <TableRows financialInstruments={config.financialInstruments} />
                             </tbody>
                         </table>
                     </div>
